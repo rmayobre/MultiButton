@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpeedDial">
+        <!-- Color Attributes -->
+        <attr name="fabColor" format="color"/>
+        <attr name="overlayColor" format="color"/>
+        <!-- FAB Margin settings -->
+        <attr name="fabMargin" format="dimension"/>
+        <attr name="fabMarginTop" format="dimension"/>
+        <attr name="fabMarginBottom" format="dimension"/>
+        <attr name="fabMarginStart" format="dimension"/>
+        <attr name="fabMarginEnd" format="dimension"/>
+        <!-- FAB icons -->
+        <attr name="collapsedIcon" format="reference"/>
+        <attr name="expandedIcon" format="reference"/>
+        <!-- FAB animations -->
+        <attr name="collapseAnim" format="reference"/>
+        <attr name="expandAnim" format="reference"/>
+        <attr name="showAnim" format="reference"/>
+        <attr name="hideAnim" format="reference"/>
+        <!-- Other -->
+        <attr name="scaleType" format="enum">
+            <enum name="matrix" value="0"/>
+            <enum name="fitXY" value="1"/>
+            <enum name="fitStart" value="2"/>
+            <enum name="fitCenter" value="3"/>
+            <enum name="fitEnd" value="4"/>
+            <enum name="center" value="5"/>
+            <enum name="centerCrop" value="6"/>
+            <enum name="centerInside" value="7"/>
+        </attr>
+    </declare-styleable>
+</resources>
