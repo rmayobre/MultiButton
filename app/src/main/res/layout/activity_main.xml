@@ -49,9 +49,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.multibutton.library.HideOnScrollBehavior"
+        app:collapsedIcon="@drawable/ic_add_white"
+        app:expandedIcon="@drawable/ic_add_white"
+        app:collapseAnim="@anim/fab_rotate_backward"
+        app:expandAnim="@anim/fab_rotate_forward"
         app:overlayColor="@color/cardview_dark_background"
-        app:fabCollapsedIcon="@drawable/ic_add_white"
-        app:fabExpandedIcon="@drawable/ic_add_white"
         app:fabColor="@color/colorPrimary"/>
+
+<!--    <com.multibutton.library.SpeedDial-->
+<!--        android:id="@+id/speedDialButton"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_behavior="com.multibutton.library.HideOnScrollBehavior"-->
+<!--        app:overlayColor="@color/cardview_dark_background"-->
+<!--        app:fabCollapsedIcon="@drawable/ic_add_white"-->
+<!--        app:fabExpandedIcon="@drawable/ic_add_white"-->
+<!--        app:fabColor="@color/colorPrimary"/>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

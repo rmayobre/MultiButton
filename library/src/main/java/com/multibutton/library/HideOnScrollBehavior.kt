@@ -28,7 +28,7 @@ class HideOnScrollBehavior: CoordinatorLayout.Behavior<SpeedDial> {
     }
 
     /**
-     * Choose to hide SpeedDial at the end of RecyclerView.
+     * Choose to hide speedDial at the end of RecyclerView.
      * @param hide True to hide at the end of a RecyclerView, False to keep button present at the end of the RecyclerView.
      */
     fun hideAtEnd(hide: Boolean) {
@@ -36,20 +36,20 @@ class HideOnScrollBehavior: CoordinatorLayout.Behavior<SpeedDial> {
     }
 
     /**
-     * Register this behavior to a SpeedDial and a RecyclerView.
-     * @param SpeedDial the button to be register to behavior.
+     * Register this behavior to a speedDial and a RecyclerView.
+     * @param speedDial the view to be register to behavior.
      * @param recyclerView the RecyclerView the behavior will listener to for state changes.
      */
-    fun register(SpeedDial: SpeedDial, recyclerView: RecyclerView) {
-        listener.SpeedDial = SpeedDial
+    fun register(speedDial: SpeedDial, recyclerView: RecyclerView) {
+        listener.speedDial = speedDial
         recyclerView.addOnScrollListener(listener)
     }
 
-    private fun findRecyclerView(viewGroup: ViewGroup, SpeedDial: SpeedDial): Boolean {
+    private fun findRecyclerView(viewGroup: ViewGroup, speedDial: SpeedDial): Boolean {
         for (i in 0..viewGroup.childCount) {
             when(val view = viewGroup.getChildAt(i)) {
-                is RecyclerView -> return view.isScrollable { register(SpeedDial, view) }
-                is ViewGroup    -> if (findRecyclerView(view, SpeedDial)) return true
+                is RecyclerView -> return view.isScrollable { register(speedDial, view) }
+                is ViewGroup    -> if (findRecyclerView(view, speedDial)) return true
             }
         }
         return false
@@ -69,24 +69,24 @@ class HideOnScrollBehavior: CoordinatorLayout.Behavior<SpeedDial> {
     }
 
     inner class ScrollListener: RecyclerView.OnScrollListener() {
-        var SpeedDial: SpeedDial? = null
+        var speedDial: SpeedDial? = null
         var hideAtEnd: Boolean = true
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (hideAtEnd) {
                     if (recyclerView.canScrollVertically(1)) {
-                        SpeedDial?.show()
+                        speedDial?.show()
                     }
                 } else {
-                    SpeedDial?.show()
+                    speedDial?.show()
                 }
             }
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (dy > 0 || dy < 0) {
-                SpeedDial?.hide()
+                speedDial?.hide()
             }
         }
     }

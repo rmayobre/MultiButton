@@ -6,77 +6,96 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.*
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class SpeedDialAction(context: Context) : LinearLayout(context) {
+class SpeedDialAction private constructor(context: Context) : LinearLayout(context), Animation.AnimationListener {
 
     val fab: FloatingActionButton
 
-    private val cardView: MaterialCardView
-
     private val textView: TextView
+    private val cardView: CardView
 
-    val label: String
-        get() = textView.text.toString()
+    private var showAnimation: Animation? = null
+    private var hideAnimation: Animation? = null
+
+    private var labelShowAnimation: Animation? = null
+    private var labelHideAnimation: Animation? = null
 
     init {
-        with(View.inflate(context,
-            FLOATING_ACTION_LAYOUT, this)) {
-            layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+        with(inflate(context, FLOATING_ACTION_LAYOUT, this)) {
+            layoutParams = LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
                 gravity = Gravity.END
-                setMargins(context.resources.getDimensionPixelSize(HORIZONTAL_MARGIN), 0,
-                    context.resources.getDimensionPixelSize(HORIZONTAL_MARGIN), 0)
+                setMargins(
+                    context.resources.getDimensionPixelSize(HORIZONTAL_MARGIN), 0,
+                    context.resources.getDimensionPixelSize(HORIZONTAL_MARGIN), 0
+                )
             }
-            cardView = findViewById<MaterialCardView>(CARD_VIEW).apply {
-                visibility = View.GONE
-            }
-            textView = findViewById<TextView>(TEXT_VIEW).apply {
-                visibility = View.GONE
-            }
+
+            cardView = findViewById(CARD_VIEW)
+            textView = findViewById(TEXT_VIEW)
             fab = findViewById(BUTTON)
+        }
+        visibility = View.GONE
+    }
+
+    override fun onAnimationStart(animation: Animation?) {}
+
+    override fun onAnimationEnd(animation: Animation?) {
+        if (animation === hideAnimation) {
             visibility = View.GONE
         }
     }
 
+    override fun onAnimationRepeat(animation: Animation?) {}
 
-    /**
-     *
-     */
-    internal fun show(buttonAnimation: Animation?, cardAnimation: Animation?) {
-        super.setVisibility(View.VISIBLE)
-        buttonAnimation?.let { fab.startAnimation(it) }
-        cardAnimation?.let { cardView.startAnimation(it) }
+    internal fun show() {
+        visibility = View.VISIBLE
+        labelShowAnimation?.let { labelAnim ->
+            cardView.startAnimation(labelAnim)
+            showAnimation?.let { fabAnim ->
+                fab.startAnimation(fabAnim)
+            }
+        } ?: showAnimation?.let {
+            startAnimation(it)
+        }
     }
 
-    /**
-     *
-     */
-    internal fun hide(buttonAnimation: Animation?, cardAnimation: Animation?) {
-        // TODO create Animation.AnimationListener to help declare when view is gone.
-        buttonAnimation?.let { fab.startAnimation(it) }
-        cardAnimation?.let { cardView.startAnimation(it) }
-        super.setVisibility(View.GONE)
+    internal fun hide() {
+        labelHideAnimation?.let { labelAnim ->
+            cardView.startAnimation(labelAnim)
+            hideAnimation?.let { fabAnim ->
+                fab.startAnimation(fabAnim)
+            }
+        } ?: hideAnimation?.let {
+            startAnimation(it)
+        } ?: run {
+            visibility = View.GONE
+        }
     }
 
     class Builder(private val context: Context) {
+        @DrawableRes private var imageId: Int? = null
 
-        @IdRes var id: Int? = null
-        @DrawableRes var imageId: Int? = null
-        @ColorRes var backgroundColor: Int? = null
-        @ColorRes var textColor: Int? = null
-        @ColorRes var textBackgroundColor: Int? = null
-        var text: String? = null
-        var listener: OnClickListener? = null
+        @ColorRes private var backgroundColor: Int? = null
+        @ColorRes private var textColor: Int? = null
+        @ColorRes private var textBackgroundColor: Int? = null
 
-        fun setId(@IdRes id: Int) = apply {
-            this.id = id
-        }
+        private var text: String? = null
+        private var listener: OnClickListener? = null
+        private var showAnimation: Animation? = null
+        private var hideAnimation: Animation? = null
+        private var labelShowAnimation: Animation? = null
+        private var labelHideAnimation: Animation? = null
 
         fun setImage(@DrawableRes imageId: Int) = apply {
             this.imageId = imageId
@@ -102,35 +121,83 @@ class SpeedDialAction(context: Context) : LinearLayout(context) {
             this.listener = listener
         }
 
-        fun build(): SpeedDialAction {
-            return SpeedDialAction(context).apply {
-                fab.id = id
+        fun setShowAnimation(@AnimRes id: Int) = apply {
+            showAnimation = AnimationUtils.loadAnimation(context, id)
+        }
 
-                imageId?.let {
-                    fab.setImageDrawable(AppCompatResources.getDrawable(context, it))
-                }
+        fun setShowAnimation(animation: Animation) = apply {
+            showAnimation = animation
+        }
 
-                backgroundColor?.let {
-                    fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, it))
-                }
+        fun setHideAnimation(@AnimRes id: Int) = apply {
+            hideAnimation = AnimationUtils.loadAnimation(context, id)
+        }
 
-                text?.let {
-                    with(textView) {
-                        text = it
-                        visibility = android.view.View.VISIBLE
-                        cardView.visibility = android.view.View.VISIBLE
-                        textColor?.let {
-                            textView.setTextColor(ContextCompat.getColor(context, it))
-                        }
-                        textBackgroundColor?.let {
-                            cardView.setBackgroundColor(ContextCompat.getColor(context, it))
-                        }
+        fun setHideAnimation(animation: Animation) = apply {
+            hideAnimation = animation
+        }
+
+        fun setLabelShowAnimation(@AnimRes id: Int) = apply {
+            labelShowAnimation = AnimationUtils.loadAnimation(context, id)
+        }
+
+        fun setLabelShowAnimation(animation: Animation) = apply {
+            labelShowAnimation = animation
+        }
+
+        fun setLabelHideAnimation(@AnimRes id: Int) = apply {
+            labelHideAnimation = AnimationUtils.loadAnimation(context, id)
+        }
+
+
+        fun setLabelHideAnimation(animation: Animation) = apply {
+            labelHideAnimation = animation
+        }
+
+
+        fun build(): SpeedDialAction = SpeedDialAction(context).apply {
+            imageId?.let {
+                fab.setImageDrawable(AppCompatResources.getDrawable(context, it))
+            }
+
+            backgroundColor?.let {
+                fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, it))
+            }
+
+            text?.let {
+                with(textView) {
+                    text = it
+                    visibility = android.view.View.VISIBLE
+                    cardView.visibility = android.view.View.VISIBLE
+                    textColor?.let {
+                        textView.setTextColor(ContextCompat.getColor(context, it))
+                    }
+                    textBackgroundColor?.let {
+                        cardView.setBackgroundColor(ContextCompat.getColor(context, it))
                     }
                 }
+            }
 
-                listener?.let {
-                    setOnClickListener(it)
-                }
+            this@Builder.showAnimation ?.let {
+                showAnimation = it
+            }
+
+            this@Builder.hideAnimation ?.let {
+                it.setAnimationListener(this)
+                hideAnimation = it
+            }
+
+            this@Builder.labelShowAnimation?.let {
+                labelShowAnimation = it
+            }
+
+            this@Builder.labelHideAnimation?.let {
+                it.setAnimationListener(this)
+                labelHideAnimation = it
+            }
+
+            listener?.let {
+                setOnClickListener(it)
             }
         }
     }

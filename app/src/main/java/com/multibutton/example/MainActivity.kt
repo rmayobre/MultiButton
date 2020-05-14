@@ -2,18 +2,68 @@ package com.multibutton.example
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.multibutton.library.HideOnScrollBehavior
+import com.multibutton.library.SpeedDial
+import com.multibutton.library.SpeedDialAction
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private lateinit var button: SpeedDial
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(MAIN_ACTIVITY)
+
+        button = findViewById(R.id.speedDialButton)
+        with(button) {
+            addAction(SpeedDialAction.Builder(this@MainActivity)
+//                .setId(FAB_1)
+                .setImage(FAB_1_DRAWABLE)
+                .setLabel("test 1")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fade_in)
+                .setHideAnimation(R.anim.fade_out)
+                .build())
+            addAction(SpeedDialAction.Builder(this@MainActivity)
+//                .setId(FAB_2)
+                .setImage(FAB_1_DRAWABLE)
+                .setLabel("test 2")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fade_in)
+                .setHideAnimation(R.anim.fade_out)
+                .build())
+            addAction(SpeedDialAction.Builder(this@MainActivity)
+//                .setId(FAB_3)
+                .setImage(FAB_1_DRAWABLE)
+                .setLabel("test 3")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fade_in)
+                .setHideAnimation(R.anim.fade_out)
+                .build())
+            addAction(SpeedDialAction.Builder(this@MainActivity)
+//                .setId(FAB_4)
+                .setImage(FAB_1_DRAWABLE)
+                .setLabel("test 4")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fade_in)
+                .setHideAnimation(R.anim.fade_out)
+                .build())
+            addAction(SpeedDialAction.Builder(this@MainActivity)
+//                .setId(FAB_5)
+                .setImage(FAB_1_DRAWABLE)
+                .setLabel("test 5")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fade_in)
+                .setHideAnimation(R.anim.fade_out)
+                .build())
+        }
 
         val texts: MutableList<String> = mutableListOf()
         texts.add("Text 1")
@@ -44,37 +94,18 @@ class MainActivity : AppCompatActivity() {
             adapter = TextAdapter(texts)
         }
 
-//        with(speedDialButton) {
-//            addAction(
-//                SpeedDialAction.Attributes(FAB_1, FAB_1_DRAWABLE)
-//                    .text("test 1"))
-//
-//            addAction(
-//                SpeedDialAction.Attributes(FAB_2, FAB_1_DRAWABLE)
-//                    .text("test 2"))
-//
-//            addAction(
-//                SpeedDialAction.Attributes(FAB_3, FAB_1_DRAWABLE)
-//                    .text("test 3"))
-//
-//            addAction(
-//                SpeedDialAction.Attributes(FAB_4, FAB_1_DRAWABLE)
-//                    .text("test 4"))
-//
-//            addAction(
-//                SpeedDialAction.Attributes(FAB_5, FAB_1_DRAWABLE)
-//                    .text("test 5"))
-//            addListener(View.OnClickListener {
-//                Log.d(TAG, "Action Clicked")
-//            })
-//        }
-
         HideOnScrollBehavior.from(speedDialButton).hideAtEnd(false)
     }
 
+//    override fun on
+
     override fun onStart() {
         super.onStart()
-        speedDialButton.hide()
+//        speedDialButton.hide()
+    }
+
+    override fun onClick(v: View) {
+        Toast.makeText(this, "Button ID clicked -> ${v.id}", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

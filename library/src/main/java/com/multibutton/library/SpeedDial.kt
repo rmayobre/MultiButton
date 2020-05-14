@@ -20,10 +20,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import kotlin.math.roundToInt
 
-class SpeedDial : LinearLayout {
+class SpeedDial : LinearLayout, Animation.AnimationListener {
 
-    var state: State = State.COLLAPSED
-        private set
+    private var state: State = State.COLLAPSED
 
     /** Main button for SpeedDial. */
     private val button: ImageButton
@@ -34,28 +33,21 @@ class SpeedDial : LinearLayout {
     private var collapseIcon: Drawable? = null
     private var expandIcon: Drawable? = null
 
-//    private var showAnimation: Animation? = null
-//    private var hideAnimation: Animation? = null
+    private var showAnimation: Animation? = null
+    private var hideAnimation: Animation? = null
+
     private var collapseAnimation: Animation? = null
     private var expandAnimation: Animation? = null
 
-    // TODO handle action's animation
-    private var actionCollapseAnimation: Animation? = null
-    private var actionExpandAnimation: Animation? = null
-
-    private val actions: MutableMap<Int, SpeedDialAction> = mutableMapOf()
+    private val actions: MutableSet<SpeedDialAction> = mutableSetOf()
 
     constructor(context: Context): this(context, null) //super(context) TODO why did i not apply attributes?
 
     constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        with(context.obtainStyledAttributes(attrs,
-            STYLEABLE_RES, 0, 0)) {
-            val overlayColor = getColor(
-                STYLEABLE_OVERLAY_COLOR,
-                ATTRIBUTE_NOT_SET
-            )
+        with(context.obtainStyledAttributes(attrs, STYLEABLE_RES, 0, 0)) {
+            val overlayColor = getColor(STYLEABLE_OVERLAY_COLOR, ATTRIBUTE_NOT_SET)
             backgroundTransition = if (overlayColor != ATTRIBUTE_NOT_SET) {
                 val colors: Array<ColorDrawable> = arrayOf(
                     ColorDrawable(ContextCompat.getColor(context,
@@ -67,17 +59,16 @@ class SpeedDial : LinearLayout {
                 TransitionDrawable(colors).also { background = it }
             } else null
 
-            // TODO handle show/hide animations.
-//            showAnimation = AnimationUtils.loadAnimation(context, getResourceId(STYLEABLE_FAB_SHOW_ANIMATION, ANIMATION_FAB_SHOW)).apply {
-//                setAnimationListener(this@SpeedDial)
-//            }
-//
-//            hideAnimation = AnimationUtils.loadAnimation(context, getResourceId(STYLEABLE_FAB_HIDE_ANIMATION, ANIMATION_FAB_HIDE)).apply {
-//                setAnimationListener(this@SpeedDial)
-//            }
+            val showAnimResId: Int = getResourceId(STYLEABLE_FAB_SHOW_ANIMATION, RESOURCE_ID_NULL)
+            val hideAnimResId: Int = getResourceId(STYLEABLE_FAB_HIDE_ANIMATION, RESOURCE_ID_NULL)
+
+            showAnimation = if (showAnimResId != RESOURCE_ID_NULL) AnimationUtils.loadAnimation(context, showAnimResId) else null
+            showAnimation?.setAnimationListener(this@SpeedDial)
+
+            hideAnimation = if (hideAnimResId != RESOURCE_ID_NULL) AnimationUtils.loadAnimation(context, hideAnimResId) else null
+            hideAnimation?.setAnimationListener(this@SpeedDial)
 
             button = ImageButton(context).apply {
-                // TODO apply attributes
                 id = FAB_ID
                 isClickable = true
                 isFocusable = true
@@ -101,33 +92,28 @@ class SpeedDial : LinearLayout {
                 }
 
                 layoutParams = LayoutParams(
-                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        FAB_DIMENSION, resources.displayMetrics).roundToInt(),
-                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        FAB_DIMENSION, resources.displayMetrics).roundToInt()).apply {
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_DIMENSION, resources.displayMetrics).roundToInt(),
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_DIMENSION, resources.displayMetrics).roundToInt()).apply {
 
                     gravity = Gravity.END
+
                     val metrics = context.resources.displayMetrics
-                    val margin = getDimension(
-                        STYLEABLE_FAB_MARGIN,
-                        MARGIN_NOT_SET
-                    )
+
+                    val margin = getDimension(STYLEABLE_FAB_MARGIN, MARGIN_NOT_SET)
                     val marginTop =  getDimension(STYLEABLE_FAB_MARGIN_TOP, margin)
                     val marginBottom = getDimension(STYLEABLE_FAB_MARGIN_BOTTOM, margin)
                     val marginStart = getDimension(STYLEABLE_FAB_MARGIN_START, margin)
                     val marginEnd = getDimension(STYLEABLE_FAB_MARGIN_END, margin)
                     setMargins(
-                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            FAB_HORIZONTAL_MARGIN, metrics) + marginStart).roundToInt()), // Start margin
-                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            FAB_VERTICAL_MARGIN, metrics) + marginTop).roundToInt()),     // Top margin
-                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            FAB_HORIZONTAL_MARGIN, metrics) + marginEnd).roundToInt()),   // End margin
-                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            FAB_VERTICAL_MARGIN, metrics) + marginBottom).roundToInt()))  // Bottom margin
+                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_HORIZONTAL_MARGIN, metrics) + marginStart).roundToInt()), // Start margin
+                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_VERTICAL_MARGIN, metrics) + marginTop).roundToInt()),     // Top margin
+                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_HORIZONTAL_MARGIN, metrics) + marginEnd).roundToInt()),   // End margin
+                        ((TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_VERTICAL_MARGIN, metrics) + marginBottom).roundToInt()))  // Bottom margin
                 }
 
-                setOnClickListener { changeState() }
+                setOnClickListener {
+                    changeState()
+                }
             }
 
             val collapseIconRes = getResourceId(STYLEABLE_FAB_COLLAPSED_ICON, View.NO_ID)
@@ -156,63 +142,87 @@ class SpeedDial : LinearLayout {
         }
     }
 
+    override fun onAnimationStart(animation: Animation?) {}
+
+    override fun onAnimationEnd(animation: Animation?) {
+        if (animation === hideAnimation) {
+            visibility = View.GONE
+        }
+    }
+
+    override fun onAnimationRepeat(animation: Animation?) {}
+
+    fun show() {
+        visibility = View.VISIBLE
+        showAnimation?.let {
+            if (!it.hasStarted() || it.hasEnded()) {
+                startAnimation(it)
+            }
+        }
+    }
+
+    fun setShowAnimation(animation: Animation, listener: Animation.AnimationListener? = null) {
+        showAnimation = listener?.let {
+            animation.apply {
+                setAnimationListener(it)
+            }
+        } ?: animation
+    }
+
+    fun hide() {
+        hideAnimation?.let {
+            if (!it.hasStarted() || it.hasEnded()) {
+                startAnimation(it)
+            }
+        } ?: run {
+            visibility = View.GONE
+        }
+    }
+
+    fun setHideAnimation(animation: Animation, listener: Animation.AnimationListener? = null) {
+        hideAnimation = listener?.let {
+            animation.apply {
+                setAnimationListener(it)
+            }
+        } ?: animation.apply {
+            setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    if (animation === animation) {
+                        with(this@SpeedDial) {
+                            visibility = View.GONE
+                        }
+                    }
+                }
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+        }
+    }
+
     /**
      * Provide an action for the speed dial button to display. An action is represented on the screen as
      * FloatingActionButtons lined up vertically.
      * @see [SpeedDialAction]
      */
-    fun addAction(action: SpeedDialAction) {
-        if (!actions.contains(action.id)) {
-            actions[action.id] = action
+    fun addAction(action: SpeedDialAction): Boolean{
+        if (!actions.contains(action)) {
+            actions.add(action)
             removeView(button)
             addView(action)
             addView(button)
+            return true
         }
+        return false
     }
 
-    /**
-     * Remove action by provided ID resource.
-     * @param id The identifying resource to the action.
-     */
-    fun removeAction(@IdRes id: Int) {
-        if (actions.contains(id)) {
-            removeView(actions[id])
-            actions.remove(id)
+
+    fun removeAction(action: SpeedDialAction): Boolean {
+        if (actions.contains(action)) {
+            removeView(action)
+            actions.remove(action)
+            return true
         }
-    }
-
-    /**
-     * Set the scale type of the SpeedDial's icon.
-     * @param type ScaleType for the button's icon.
-     * @see ImageView.ScaleType
-     */
-    fun setScaleType(type: ImageView.ScaleType) {
-        button.scaleType = type
-    }
-
-    /**
-     * Change the color of the SpeedDial.
-     * @param color provided color resource id.
-     * @see ColorRes
-     */
-    fun setFabColor(@ColorRes color: Int) {
-        button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
-    }
-
-    /**
-     * Once a SpeedDial is clicked, it covers the screen in an overlay. Use this method to change the color
-     * of the provided overlay.
-     * @param color provided color resource id.
-     * @see ColorRes
-     */
-    fun setOverlayColor(@ColorRes color: Int) {
-        val colors: Array<ColorDrawable> = arrayOf(
-            ColorDrawable(ContextCompat.getColor(context,
-                COLOR_COLLAPSED_BACKGROUND
-            )),
-            ColorDrawable(ContextCompat.getColor(context, color)))
-
-        backgroundTransition = TransitionDrawable(colors).also { background = it }
+        return false
     }
 
     /**
@@ -272,6 +282,39 @@ class SpeedDial : LinearLayout {
         state.setIcon(button, collapseIcon, expandIcon)
     }
 
+    /**
+     * Set the scale type of the SpeedDial's icon.
+     * @param type ScaleType for the button's icon.
+     * @see ImageView.ScaleType
+     */
+    fun setScaleType(type: ImageView.ScaleType) {
+        button.scaleType = type
+    }
+
+    /**
+     * Change the color of the SpeedDial.
+     * @param color provided color resource id.
+     * @see ColorRes
+     */
+    fun setFabColor(@ColorRes color: Int) {
+        button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
+    }
+
+    /**
+     * Once a SpeedDial is clicked, it covers the screen in an overlay. Use this method to change the color
+     * of the provided overlay.
+     * @param color provided color resource id.
+     * @see ColorRes
+     */
+    fun setOverlayColor(@ColorRes color: Int) {
+        val colors: Array<ColorDrawable> = arrayOf(
+            ColorDrawable(ContextCompat.getColor(context, COLOR_COLLAPSED_BACKGROUND)),
+            ColorDrawable(ContextCompat.getColor(context, color)))
+
+        backgroundTransition = TransitionDrawable(colors).also { background = it }
+    }
+
+    @Synchronized
     private fun changeState() {
         state = state.change(
             button,
@@ -281,8 +324,68 @@ class SpeedDial : LinearLayout {
             expandIcon,
             collapseAnimation,
             expandAnimation,
-            actions.values
+            actions
         )
+    }
+
+    private enum class State {
+        COLLAPSED {
+            override fun change(
+                button: ImageButton,
+                backgroundTransition: TransitionDrawable?,
+                transitionDuration: Int,
+                collapseIcon: Drawable?,
+                expandIcon: Drawable?,
+                collapseAnim: Animation?,
+                expandAnim: Animation?,
+                actions: Collection<SpeedDialAction>
+            ): State {
+                backgroundTransition?.startTransition(transitionDuration)
+                expandAnim?.let { button.startAnimation(it) }
+                setIcon(button, collapseIcon, expandIcon)
+                actions.forEach { it.show() }
+                return EXPANDED
+            }
+
+            override fun setIcon(button: ImageButton, collapseIcon: Drawable?, expandIcon: Drawable?) {
+                button.setImageDrawable(collapseIcon)
+            }
+        },
+        EXPANDED {
+            override fun change(
+                button: ImageButton,
+                backgroundTransition: TransitionDrawable?,
+                transitionDuration: Int,
+                collapseIcon: Drawable?,
+                expandIcon: Drawable?,
+                collapseAnim: Animation?,
+                expandAnim: Animation?,
+                actions: Collection<SpeedDialAction>
+            ): State {
+                backgroundTransition?.reverseTransition(transitionDuration)
+                collapseAnim?.let { button.startAnimation(it) }
+                setIcon(button, collapseIcon, expandIcon)
+                actions.forEach { it.hide() }
+                return COLLAPSED
+            }
+
+            override fun setIcon(button: ImageButton, collapseIcon: Drawable?, expandIcon: Drawable?) {
+                expandIcon?.let { button.setImageDrawable(it) }
+            }
+        };
+
+        abstract fun change(
+            button: ImageButton,
+            backgroundTransition: TransitionDrawable?,
+            transitionDuration: Int,
+            collapseIcon: Drawable?,
+            expandIcon: Drawable?,
+            collapseAnim: Animation?,
+            expandAnim: Animation?,
+            actions: Collection<SpeedDialAction>
+        ): State
+
+        abstract fun setIcon(button: ImageButton, collapseIcon: Drawable?, expandIcon: Drawable?)
     }
 
     companion object {
@@ -320,20 +423,21 @@ class SpeedDial : LinearLayout {
         private const val FAB_VERTICAL_MARGIN = 16F
         private const val FAB_DIMENSION = 56F
 
+        private const val RESOURCE_ID_NULL: Int = 0
         private const val ATTRIBUTE_NOT_SET: Int = Int.MIN_VALUE
         private const val MARGIN_NOT_SET: Float = 0.0F
 
         @IdRes private val FAB_ID = R.id.speed_dial_main_button
 
-        @AnimatorRes private val BUTTON_ANIMATOR = R.animator.animator_button
+//        @AnimatorRes private val BUTTON_ANIMATOR = R.animator.animator_button
 
-        @DrawableRes private val DRAWABLE_FAB_ICON = R.drawable.ic_add
+//        @DrawableRes private val DRAWABLE_FAB_ICON = R.drawable.ic_add
         @DrawableRes private val BACKGROUND_DRAWABLE = R.drawable.background_circle_ripple
 
-        @AnimRes private val ANIMATION_FAB_COLLAPSE = R.anim.fab_rotate_backward
-        @AnimRes private val ANIMATION_FAB_EXPAND = R.anim.fab_rotate_forward
-        @AnimRes private val ANIMATION_FAB_SHOW = R.anim.fab_slide_up
-        @AnimRes private val ANIMATION_FAB_HIDE = R.anim.fab_slide_down
+//        @AnimRes private val ANIMATION_FAB_COLLAPSE = R.anim.fab_rotate_backward
+//        @AnimRes private val ANIMATION_FAB_EXPAND = R.anim.fab_rotate_forward
+//        @AnimRes private val ANIMATION_FAB_SHOW = R.anim.fab_slide_up
+//        @AnimRes private val ANIMATION_FAB_HIDE = R.anim.fab_slide_down
 
         @ColorRes private val COLOR_COLLAPSED_BACKGROUND = R.color.speed_dial_overlay_collapse_default_color
         @ColorRes private val COLOR_EXPANDED_BACKGROUND = R.color.speed_dial_overlay_expand_default_color
