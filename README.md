@@ -1,2 +1,5 @@
 # MultiButton
-A button that expands to several buttons. Each sub-button created from this button can be assigned to it's own function.
+An Android button library following [material design](https://material.io/design).
+
+## Current Features
+* Speed Dial button - [reference](https://material.io/components/buttons-floating-action-button#types-of-transitions)
