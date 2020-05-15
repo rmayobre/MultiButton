@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="speed_dial_item_card_view_elevation">3dp</dimen>
+    <dimen name="speed_dial_item_card_view_corner_radius">3dp</dimen>
+    <dimen name="speed_dial_item_content_padding">4dp</dimen>
+    <dimen name="speed_dial_item_horizontal_margin">12dp</dimen>|
+    <dimen name="speed_dial_item_vertical_margin">8dp</dimen>
+    <dimen name="animator_button_elevation_pressed">0dp</dimen>
+    <dimen name="animator_button_elevation">4dp</dimen>
+</resources>

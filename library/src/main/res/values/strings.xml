@@ -1,0 +1,3 @@
+<resources>
+    <string name="speed_dial_item_text_view_template">Item Label</string>
+</resources>
