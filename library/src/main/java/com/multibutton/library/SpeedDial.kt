@@ -41,7 +41,7 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
 
     private val actions: MutableSet<SpeedDialAction> = mutableSetOf()
 
-    constructor(context: Context): this(context, null) //super(context) TODO why did i not apply attributes?
+    constructor(context: Context): this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
 
