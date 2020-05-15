@@ -68,25 +68,39 @@ class HideOnScrollBehavior: CoordinatorLayout.Behavior<SpeedDial> {
         } ?: false
     }
 
-    inner class ScrollListener: RecyclerView.OnScrollListener() {
+    private inner class ScrollListener: RecyclerView.OnScrollListener() {
         var speedDial: SpeedDial? = null
         var hideAtEnd: Boolean = true
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (hideAtEnd) {
-                    if (recyclerView.canScrollVertically(1)) {
+            when (newState) {
+                RecyclerView.SCROLL_STATE_IDLE -> {
+                    if (hideAtEnd) {
+                        if (recyclerView.canScrollVertically(1)) {
+                            speedDial?.show()
+                        }
+                    } else {
                         speedDial?.show()
                     }
-                } else {
-                    speedDial?.show()
+                }
+                RecyclerView.SCROLL_STATE_DRAGGING -> {
+                    speedDial?.let {
+                        if (recyclerView.canScrollVertically(1)
+                            && recyclerView.canScrollVertically(-1)) {
+                            it.hide()
+                        }
+                    }
                 }
             }
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (dy > 0 || dy < 0) {
-                speedDial?.hide()
+                speedDial?.let {
+                    if (it.visibility == View.VISIBLE) {
+                        it.hide()
+                    }
+                }
             }
         }
     }

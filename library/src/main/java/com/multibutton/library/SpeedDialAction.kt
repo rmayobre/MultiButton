@@ -84,6 +84,9 @@ class SpeedDialAction private constructor(context: Context) : LinearLayout(conte
     }
 
     class Builder(private val context: Context) {
+
+        @IdRes private var id: Int? = null
+
         @DrawableRes private var imageId: Int? = null
 
         @ColorRes private var backgroundColor: Int? = null
@@ -96,6 +99,10 @@ class SpeedDialAction private constructor(context: Context) : LinearLayout(conte
         private var hideAnimation: Animation? = null
         private var labelShowAnimation: Animation? = null
         private var labelHideAnimation: Animation? = null
+
+        fun setId(@IdRes id: Int) = apply {
+            this.id = id
+        }
 
         fun setImage(@DrawableRes imageId: Int) = apply {
             this.imageId = imageId
@@ -156,6 +163,8 @@ class SpeedDialAction private constructor(context: Context) : LinearLayout(conte
 
 
         fun build(): SpeedDialAction = SpeedDialAction(context).apply {
+            this@Builder.id?.let { id = it }
+
             imageId?.let {
                 fab.setImageDrawable(AppCompatResources.getDrawable(context, it))
             }

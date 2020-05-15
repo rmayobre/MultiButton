@@ -50,14 +50,18 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
             val overlayColor = getColor(STYLEABLE_OVERLAY_COLOR, ATTRIBUTE_NOT_SET)
             backgroundTransition = if (overlayColor != ATTRIBUTE_NOT_SET) {
                 val colors: Array<ColorDrawable> = arrayOf(
-                    ColorDrawable(ContextCompat.getColor(context,
-                        COLOR_COLLAPSED_BACKGROUND
-                    )),
+                    ColorDrawable(ContextCompat.getColor(context, COLOR_COLLAPSED_BACKGROUND)),
                     ColorDrawable(overlayColor)
                 )
 
                 TransitionDrawable(colors).also { background = it }
-            } else null
+            } else {
+                val colors: Array<ColorDrawable> = arrayOf(
+                    ColorDrawable(ContextCompat.getColor(context, COLOR_COLLAPSED_BACKGROUND)),
+                    ColorDrawable(ContextCompat.getColor(context, COLOR_EXPANDED_BACKGROUND)))
+
+                TransitionDrawable(colors).also { background = it }
+            }
 
             val showAnimResId: Int = getResourceId(STYLEABLE_FAB_SHOW_ANIMATION, RESOURCE_ID_NULL)
             val hideAnimResId: Int = getResourceId(STYLEABLE_FAB_HIDE_ANIMATION, RESOURCE_ID_NULL)
@@ -133,7 +137,6 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
     init {
         orientation = VERTICAL
         gravity = Gravity.BOTTOM
-        setOverlayColor(COLOR_EXPANDED_BACKGROUND)
         setOnTouchListener { _: View, _: MotionEvent ->
             if (state == State.EXPANDED) {
                 changeState()
@@ -153,10 +156,12 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
     override fun onAnimationRepeat(animation: Animation?) {}
 
     fun show() {
-        visibility = View.VISIBLE
-        showAnimation?.let {
-            if (!it.hasStarted() || it.hasEnded()) {
-                startAnimation(it)
+        if (visibility != View.VISIBLE) {
+            visibility = View.VISIBLE
+            showAnimation?.let {
+                if (!it.hasStarted() || it.hasEnded()) {
+                    startAnimation(it)
+                }
             }
         }
     }
@@ -170,12 +175,14 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
     }
 
     fun hide() {
-        hideAnimation?.let {
-            if (!it.hasStarted() || it.hasEnded()) {
-                startAnimation(it)
+        if (visibility == View.VISIBLE) {
+            hideAnimation?.let {
+                if (!it.hasStarted() || it.hasEnded()) {
+                    startAnimation(it)
+                }
+            } ?: run {
+                visibility = View.GONE
             }
-        } ?: run {
-            visibility = View.GONE
         }
     }
 
