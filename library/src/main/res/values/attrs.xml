@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="FAB">
+        <attr name="elevation_height" format="float"/>
+        <attr name="icon" format="reference"/>
+    </declare-styleable>
     <declare-styleable name="SpeedDial">
         <!-- Color Attributes -->
         <attr name="fabColor" format="color"/>

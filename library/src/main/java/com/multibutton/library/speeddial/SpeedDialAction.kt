@@ -1,4 +1,4 @@
-package com.multibutton.library
+package com.multibutton.library.speeddial
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -14,6 +14,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.multibutton.library.R
 
 class SpeedDialAction private constructor(context: Context) : LinearLayout(context), Animation.AnimationListener {
 
@@ -29,7 +30,8 @@ class SpeedDialAction private constructor(context: Context) : LinearLayout(conte
     private var labelHideAnimation: Animation? = null
 
     init {
-        with(inflate(context, FLOATING_ACTION_LAYOUT, this)) {
+        with(inflate(context,
+            FLOATING_ACTION_LAYOUT, this)) {
             layoutParams = LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -162,7 +164,9 @@ class SpeedDialAction private constructor(context: Context) : LinearLayout(conte
         }
 
 
-        fun build(): SpeedDialAction = SpeedDialAction(context).apply {
+        fun build(): SpeedDialAction = SpeedDialAction(
+            context
+        ).apply {
             this@Builder.id?.let { id = it }
 
             imageId?.let {
@@ -212,12 +216,16 @@ class SpeedDialAction private constructor(context: Context) : LinearLayout(conte
     }
 
     companion object {
-        @LayoutRes private var FLOATING_ACTION_LAYOUT = R.layout.item_speed_dial
+        @LayoutRes private var FLOATING_ACTION_LAYOUT =
+            R.layout.item_speed_dial
 
-        @DimenRes private var HORIZONTAL_MARGIN = R.dimen.speed_dial_item_horizontal_margin
+        @DimenRes private var HORIZONTAL_MARGIN =
+            R.dimen.speed_dial_item_horizontal_margin
 
-        @IdRes private var CARD_VIEW = R.id.item_card_view
-        @IdRes private var TEXT_VIEW = R.id.item_text_view
+        @IdRes private var CARD_VIEW =
+            R.id.item_card_view
+        @IdRes private var TEXT_VIEW =
+            R.id.item_text_view
         @IdRes private var BUTTON = R.id.item_button
     }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.multibutton.library.speeddial.SpeedDial
 
 class HideOnScrollBehavior: CoordinatorLayout.Behavior<SpeedDial> {
     private var listener: ScrollListener = ScrollListener()
