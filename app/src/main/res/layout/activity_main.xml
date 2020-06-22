@@ -31,33 +31,17 @@
 
     </LinearLayout>
 
-    <com.multibutton.library.FAB
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        app:icon="@android:drawable/ic_dialog_email"/>
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end|bottom"-->
-
-<!--        android:src="@android:drawable/ic_dialog_email"-->
-<!--        android:layout_margin="16dp"/>-->
-
-<!--    <com.multibutton.library.speeddial.SpeedDial-->
-<!--        android:id="@+id/speedDialButton"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_behavior="com.multibutton.library.HideOnScrollBehavior"-->
-<!--        app:collapsedIcon="@drawable/ic_add_white"-->
-<!--        app:expandedIcon="@drawable/ic_add_white"-->
-<!--        app:collapseAnim="@anim/fab_rotate_backward"-->
-<!--        app:expandAnim="@anim/fab_rotate_forward"-->
-<!--        app:showAnim="@anim/fab_slide_up"-->
-<!--        app:hideAnim="@anim/fab_slide_down"-->
-<!--        app:fabColor="@color/colorPrimary"/>-->
+    <com.multibutton.library.speeddial.SpeedDial
+        android:id="@+id/speedDialButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.multibutton.library.HideOnScrollBehavior"
+        app:collapsedIcon="@drawable/ic_add_white"
+        app:expandedIcon="@drawable/ic_add_white"
+        app:collapseAnim="@anim/fab_rotate_backward"
+        app:expandAnim="@anim/fab_rotate_forward"
+        app:showAnim="@anim/fab_slide_up"
+        app:hideAnim="@anim/fab_slide_down"
+        app:fabColor="@color/colorPrimary"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

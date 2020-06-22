@@ -8,9 +8,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.multibutton.library.FAB
 import com.multibutton.library.HideOnScrollBehavior
 import com.multibutton.library.speeddial.SpeedDial
 import com.multibutton.library.speeddial.SpeedDialAction
@@ -18,63 +15,59 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-//    private lateinit var button: SpeedDial
-
-    private lateinit var button: FAB
+    private lateinit var button: SpeedDial
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(MAIN_ACTIVITY)
 
-        button = findViewById(R.id.fab)
-
-//        button = findViewById<SpeedDial>(R.id.speedDialButton).apply {
-//            addAction(
-//                SpeedDialAction.Builder(this@MainActivity)
-//                .setId(FAB_1)
-//                .setImage(ACTION_DRAWABLE)
-//                .setLabel("test 1")
-//                .setOnClickListener(this@MainActivity)
-//                .setShowAnimation(R.anim.fab_fade_in)
-//                .setHideAnimation(R.anim.fab_fade_out)
-//                .build())
-//            addAction(
-//                SpeedDialAction.Builder(this@MainActivity)
-//                .setId(FAB_2)
-//                .setImage(ACTION_DRAWABLE)
-//                .setLabel("test 2")
-//                .setOnClickListener(this@MainActivity)
-//                .setShowAnimation(R.anim.fab_fade_in)
-//                .setHideAnimation(R.anim.fab_fade_out)
-//                .build())
-//            addAction(
-//                SpeedDialAction.Builder(this@MainActivity)
-//                .setId(FAB_3)
-//                .setImage(ACTION_DRAWABLE)
-//                .setLabel("test 3")
-//                .setOnClickListener(this@MainActivity)
-//                .setShowAnimation(R.anim.fab_fade_in)
-//                .setHideAnimation(R.anim.fab_fade_out)
-//                .build())
-//            addAction(
-//                SpeedDialAction.Builder(this@MainActivity)
-//                .setId(FAB_4)
-//                .setImage(ACTION_DRAWABLE)
-//                .setLabel("test 4")
-//                .setOnClickListener(this@MainActivity)
-//                .setShowAnimation(R.anim.fab_fade_in)
-//                .setHideAnimation(R.anim.fab_fade_out)
-//                .build())
-//            addAction(
-//                SpeedDialAction.Builder(this@MainActivity)
-//                .setId(FAB_5)
-//                .setImage(ACTION_DRAWABLE)
-//                .setLabel("test 5")
-//                .setOnClickListener(this@MainActivity)
-//                .setShowAnimation(R.anim.fab_fade_in)
-//                .setHideAnimation(R.anim.fab_fade_out)
-//                .build())
-//        }
+        button = findViewById<SpeedDial>(R.id.speedDialButton).apply {
+            addAction(
+                SpeedDialAction.Builder(this@MainActivity)
+                .setId(FAB_1)
+                .setImage(ACTION_DRAWABLE)
+                .setLabel("test 1")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fab_fade_in)
+                .setHideAnimation(R.anim.fab_fade_out)
+                .build())
+            addAction(
+                SpeedDialAction.Builder(this@MainActivity)
+                .setId(FAB_2)
+                .setImage(ACTION_DRAWABLE)
+                .setLabel("test 2")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fab_fade_in)
+                .setHideAnimation(R.anim.fab_fade_out)
+                .build())
+            addAction(
+                SpeedDialAction.Builder(this@MainActivity)
+                .setId(FAB_3)
+                .setImage(ACTION_DRAWABLE)
+                .setLabel("test 3")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fab_fade_in)
+                .setHideAnimation(R.anim.fab_fade_out)
+                .build())
+            addAction(
+                SpeedDialAction.Builder(this@MainActivity)
+                .setId(FAB_4)
+                .setImage(ACTION_DRAWABLE)
+                .setLabel("test 4")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fab_fade_in)
+                .setHideAnimation(R.anim.fab_fade_out)
+                .build())
+            addAction(
+                SpeedDialAction.Builder(this@MainActivity)
+                .setId(FAB_5)
+                .setImage(ACTION_DRAWABLE)
+                .setLabel("test 5")
+                .setOnClickListener(this@MainActivity)
+                .setShowAnimation(R.anim.fab_fade_in)
+                .setHideAnimation(R.anim.fab_fade_out)
+                .build())
+        }
 
         val texts: MutableList<String> = mutableListOf()
         texts.add("Text 1")
@@ -105,7 +98,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             adapter = TextAdapter(texts)
         }
 
-//        HideOnScrollBehavior.from(speedDialButton).hideAtEnd(false)
+        HideOnScrollBehavior.from(speedDialButton).hideAtEnd(false)
     }
 
     override fun onClick(v: View) {

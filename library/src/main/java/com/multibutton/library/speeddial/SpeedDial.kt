@@ -458,15 +458,7 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
 
         @IdRes private val FAB_ID = R.id.speed_dial_main_button
 
-//        @AnimatorRes private val BUTTON_ANIMATOR = R.animator.animator_button
-
-//        @DrawableRes private val DRAWABLE_FAB_ICON = R.drawable.ic_add
         @DrawableRes private val BACKGROUND_DRAWABLE = R.drawable.background_circle_ripple
-
-//        @AnimRes private val ANIMATION_FAB_COLLAPSE = R.anim.fab_rotate_backward
-//        @AnimRes private val ANIMATION_FAB_EXPAND = R.anim.fab_rotate_forward
-//        @AnimRes private val ANIMATION_FAB_SHOW = R.anim.fab_slide_up
-//        @AnimRes private val ANIMATION_FAB_HIDE = R.anim.fab_slide_down
 
         @ColorRes private val COLOR_COLLAPSED_BACKGROUND = R.color.speed_dial_overlay_collapse_default_color
         @ColorRes private val COLOR_EXPANDED_BACKGROUND = R.color.speed_dial_overlay_expand_default_color
