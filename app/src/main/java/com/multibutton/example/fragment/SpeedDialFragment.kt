@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.multibutton.example.R
 import com.multibutton.example.TextAdapter
-import com.multibutton.library.HideOnScrollBehavior
+import com.multibutton.library.speeddial.HideOnScrollBehavior
 import com.multibutton.library.speeddial.SpeedDial
 import com.multibutton.library.speeddial.SpeedDialAction
 

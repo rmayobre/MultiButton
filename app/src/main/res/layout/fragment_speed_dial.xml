@@ -18,7 +18,7 @@
         android:id="@+id/speedDialButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.multibutton.library.HideOnScrollBehavior"
+        app:layout_behavior="com.multibutton.library.speeddial.HideOnScrollBehavior"
         app:collapsedIcon="@drawable/ic_add_white"
         app:expandedIcon="@drawable/ic_add_white"
         app:collapseAnim="@anim/fab_rotate_backward"

@@ -47,7 +47,6 @@ class ExpandableFabFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         with(context) {
             Toast.makeText(this, "Email button was clicked.", Toast.LENGTH_SHORT).show()
-            button.changeState()
         }
     }
 

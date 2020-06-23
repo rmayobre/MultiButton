@@ -3,6 +3,7 @@ package com.multibutton.library.expanding
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -14,6 +15,9 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.StyleableRes
+import androidx.transition.Transition
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.multibutton.library.FAB
 import com.multibutton.library.R
 import kotlin.math.roundToInt
@@ -29,7 +33,7 @@ class ExpandableFAB : FAB {
     private val fabWidth: Int
         get() = icon.width + textView.width
 
-    private val animation = ExpandableFabAnimation()
+    private val transition: Transition
 
     constructor(context: Context): this(context, null)
 
@@ -66,13 +70,18 @@ class ExpandableFAB : FAB {
                 FAB_DIMENSION.toDipDimension()
             )
         }
+        transition = TransitionInflater.from(context).inflateTransition(R.transition.expandable_fab_transition).apply {
+            duration = 100
+        }
     }
 
     /**
      * Change the state of the FAB. Changes from collapsed to expanded, vice versa.
      */
-    fun changeState() {
-//        state = state.change(animation)
+    fun changeState(animate: Boolean = true) {
+        if (animate) {
+            TransitionManager.beginDelayedTransition(parent as ViewGroup, transition)
+        }
         state = state.change(resources, textView, button)
     }
 
@@ -98,11 +107,6 @@ class ExpandableFAB : FAB {
 
     enum class State {
         COLLAPSED {
-            override fun change(animation: Animation): State {
-                animation.startNow()
-                return EXPANDED
-            }
-
             override fun change(
                 resources: Resources,
                 textView: TextView,
@@ -117,11 +121,6 @@ class ExpandableFAB : FAB {
             }
         },
         EXPANDED {
-            override fun change(animation: Animation): State {
-                animation.startNow()
-                return COLLAPSED
-            }
-
             override fun change(
                 resources: Resources,
                 textView: TextView,
@@ -136,45 +135,7 @@ class ExpandableFAB : FAB {
             }
         };
 
-        /* Not working - TODO fix */
-        internal abstract fun change(animation: Animation): State
-
         internal abstract fun change(resources: Resources, textView: TextView, button: Button): State
-    }
-
-    private inner class ExpandableFabAnimation: Animation() {
-
-        private val collapsedWidth: Int = FAB_DIMENSION.toDipDimension()
-
-        private val expandedWidth: Int = ViewGroup.LayoutParams.MATCH_PARENT
-
-        init {
-            duration = 2
-        }
-
-        override fun applyTransformation(
-            interpolatedTime: Float,
-            t: Transformation?
-        ) {
-            if (state == State.COLLAPSED) {
-                textView.visibility = View.VISIBLE
-                layoutParams.height = ((collapsedWidth * interpolatedTime).toInt())
-            } else {
-                textView.visibility = View.GONE
-                layoutParams.height = ((expandedWidth * interpolatedTime).toInt())
-            }
-            requestLayout()
-        }
-
-//        override fun initialize(
-//            width: Int, height: Int,
-//            parentWidth: Int, parentHeight: Int
-//        ) {
-//            super.initialize(width, height, parentWidth, parentHeight)
-//        }
-
-        override fun willChangeBounds(): Boolean = true
-
     }
 
     companion object {
