@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.SpeedDialFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="2dp"
+        android:layout_marginBottom="3dp"/>
+
+    <com.multibutton.library.speeddial.SpeedDial
+        android:id="@+id/speedDialButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.multibutton.library.HideOnScrollBehavior"
+        app:collapsedIcon="@drawable/ic_add_white"
+        app:expandedIcon="@drawable/ic_add_white"
+        app:collapseAnim="@anim/fab_rotate_backward"
+        app:expandAnim="@anim/fab_rotate_forward"
+        app:showAnim="@anim/fab_slide_up"
+        app:hideAnim="@anim/fab_slide_down"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

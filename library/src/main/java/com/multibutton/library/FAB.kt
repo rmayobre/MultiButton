@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StyleableRes
@@ -23,6 +22,8 @@ open class FAB : FrameLayout {
 
     protected val icon: ImageView
 
+    protected val contentElevation: Float
+
     constructor(context: Context): this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
@@ -30,42 +31,53 @@ open class FAB : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
         with(context.obtainStyledAttributes(attrs, STYLEABLE_RES, 0, 0)) {
             val fabElevation: Float = getDimension(ELEVATION_STYLEABLE_RES, 0.0f)
+            contentElevation = (fabElevation + 4) * 4.0f
             icon = ImageView(context).apply {
                 id = FAB_ICON_ID
                 scaleType = ImageView.ScaleType.FIT_XY
-                elevation = (fabElevation + 4) * 4.0f
+                elevation = contentElevation
                 layoutParams = LayoutParams(
-                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, ICON_DIMENSION, resources.displayMetrics).roundToInt(),
-                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, ICON_DIMENSION, resources.displayMetrics).roundToInt()
+                    ICON_DIMENSION.toDipDimension(), // width
+                    ICON_DIMENSION.toDipDimension()  // height
                 ).apply {
-                    gravity = Gravity.CENTER
+                    gravity = Gravity.CENTER_VERTICAL
+                    marginStart = 16.0f.toDipDimension()
                 }
             }
             setIcon(getResourceId(ICON_STYLEABLE_RES, View.NO_ID))
             addView(icon)
             button = Button(context).apply {
                 id = FAB_ID
-                isClickable = true
                 elevation = fabElevation
                 background = ContextCompat.getDrawable(context, FAB_BACKGROUND_DRAWABLE)
-                layoutParams = LinearLayout.LayoutParams(
-                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_DIMENSION, resources.displayMetrics).roundToInt(),
-                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, FAB_DIMENSION, resources.displayMetrics).roundToInt()
+                layoutParams = LayoutParams(
+                    FAB_DIMENSION.toDipDimension(), // width
+                    FAB_DIMENSION.toDipDimension()  // height
                 )
             }
             addView(button)
         }
     }
 
-    fun setIcon(@DrawableRes iconRes: Int): Boolean = if (iconRes != View.NO_ID) {
+    override fun setOnClickListener(listener: OnClickListener?) {
+        super.setOnClickListener(listener)
+        button.setOnClickListener(listener)
+    }
+
+    open fun setIcon(@DrawableRes iconRes: Int): Boolean = if (iconRes != View.NO_ID) {
         setIcon(AppCompatResources.getDrawable(context, iconRes))
     } else false
 
-    fun setIcon(iconDrawable: Drawable?): Boolean = iconDrawable?.let { drawable ->
+    open fun setIcon(iconDrawable: Drawable?): Boolean = iconDrawable?.let { drawable ->
         icon.setImageDrawable(drawable)
         true
     } ?: false
 
+    /**
+     * Convert float values to Device Independent Pixels (Dip/dp).
+     * @return Returns Int as the measurement of the Dip dimension.
+     */
+    protected fun Float.toDipDimension(): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, resources.displayMetrics).roundToInt()
 
     companion object {
         private const val FAB_DIMENSION = 56.0f

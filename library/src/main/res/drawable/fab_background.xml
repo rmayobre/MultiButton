@@ -2,11 +2,15 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?android:colorControlHighlight">
     <item>
-        <shape android:shape="oval">
+        <shape android:shape="rectangle">
+            <corners android:radius="100dp" />
             <solid android:color="?android:colorAccent" />
-            <size
-                android:width="56dp"
-                android:height="56dp"/>
         </shape>
+<!--        <shape android:shape="oval">-->
+<!--            <solid android:color="?android:colorAccent" />-->
+<!--            <size-->
+<!--                android:width="56dp"-->
+<!--                android:height="56dp"/>-->
+<!--        </shape>-->
     </item>
 </ripple>
