@@ -1,4 +1,4 @@
-package com.multibutton.library
+package com.multibutton.library.speeddial
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import androidx.annotation.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.multibutton.library.R
 import kotlin.math.roundToInt
 
 class SpeedDial : LinearLayout, Animation.AnimationListener {
@@ -47,7 +48,10 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
         with(context.obtainStyledAttributes(attrs, STYLEABLE_RES, 0, 0)) {
-            val overlayColor = getColor(STYLEABLE_OVERLAY_COLOR, ATTRIBUTE_NOT_SET)
+            val overlayColor = getColor(
+                STYLEABLE_OVERLAY_COLOR,
+                ATTRIBUTE_NOT_SET
+            )
             backgroundTransition = if (overlayColor != ATTRIBUTE_NOT_SET) {
                 val colors: Array<ColorDrawable> = arrayOf(
                     ColorDrawable(ContextCompat.getColor(context, COLOR_COLLAPSED_BACKGROUND)),
@@ -63,8 +67,14 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
                 TransitionDrawable(colors).also { background = it }
             }
 
-            val showAnimResId: Int = getResourceId(STYLEABLE_FAB_SHOW_ANIMATION, RESOURCE_ID_NULL)
-            val hideAnimResId: Int = getResourceId(STYLEABLE_FAB_HIDE_ANIMATION, RESOURCE_ID_NULL)
+            val showAnimResId: Int = getResourceId(
+                STYLEABLE_FAB_SHOW_ANIMATION,
+                RESOURCE_ID_NULL
+            )
+            val hideAnimResId: Int = getResourceId(
+                STYLEABLE_FAB_HIDE_ANIMATION,
+                RESOURCE_ID_NULL
+            )
 
             showAnimation = if (showAnimResId != RESOURCE_ID_NULL) AnimationUtils.loadAnimation(context, showAnimResId) else null
             showAnimation?.setAnimationListener(this@SpeedDial)
@@ -76,9 +86,8 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
                 id = FAB_ID
                 isClickable = true
                 isFocusable = true
-                background = ContextCompat.getDrawable(context,
-                    BACKGROUND_DRAWABLE
-                )
+                background = ContextCompat.getDrawable(context, BACKGROUND_DRAWABLE)
+
                 scaleType =
                     getScaleType(
                         getInt(
@@ -103,7 +112,10 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
 
                     val metrics = context.resources.displayMetrics
 
-                    val margin = getDimension(STYLEABLE_FAB_MARGIN, MARGIN_NOT_SET)
+                    val margin = getDimension(
+                        STYLEABLE_FAB_MARGIN,
+                        MARGIN_NOT_SET
+                    )
                     val marginTop =  getDimension(STYLEABLE_FAB_MARGIN_TOP, margin)
                     val marginBottom = getDimension(STYLEABLE_FAB_MARGIN_BOTTOM, margin)
                     val marginStart = getDimension(STYLEABLE_FAB_MARGIN_START, margin)
@@ -137,11 +149,17 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
     init {
         orientation = VERTICAL
         gravity = Gravity.BOTTOM
-        setOnTouchListener { _: View, _: MotionEvent ->
-            if (state == State.EXPANDED) {
-                changeState()
-                true
-            } else false
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean = performClick()
+
+    override fun performClick(): Boolean {
+        super.performClick()
+        return if (state == State.EXPANDED) {
+            changeState()
+            true
+        } else {
+            false
         }
     }
 
@@ -154,6 +172,8 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
     }
 
     override fun onAnimationRepeat(animation: Animation?) {}
+
+
 
     fun show() {
         if (visibility != View.VISIBLE) {
@@ -315,7 +335,9 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
      */
     fun setOverlayColor(@ColorRes color: Int) {
         val colors: Array<ColorDrawable> = arrayOf(
-            ColorDrawable(ContextCompat.getColor(context, COLOR_COLLAPSED_BACKGROUND)),
+            ColorDrawable(ContextCompat.getColor(context,
+                COLOR_COLLAPSED_BACKGROUND
+            )),
             ColorDrawable(ContextCompat.getColor(context, color)))
 
         backgroundTransition = TransitionDrawable(colors).also { background = it }
@@ -436,15 +458,7 @@ class SpeedDial : LinearLayout, Animation.AnimationListener {
 
         @IdRes private val FAB_ID = R.id.speed_dial_main_button
 
-//        @AnimatorRes private val BUTTON_ANIMATOR = R.animator.animator_button
-
-//        @DrawableRes private val DRAWABLE_FAB_ICON = R.drawable.ic_add
-        @DrawableRes private val BACKGROUND_DRAWABLE = R.drawable.background_circle_ripple
-
-//        @AnimRes private val ANIMATION_FAB_COLLAPSE = R.anim.fab_rotate_backward
-//        @AnimRes private val ANIMATION_FAB_EXPAND = R.anim.fab_rotate_forward
-//        @AnimRes private val ANIMATION_FAB_SHOW = R.anim.fab_slide_up
-//        @AnimRes private val ANIMATION_FAB_HIDE = R.anim.fab_slide_down
+        @DrawableRes private val BACKGROUND_DRAWABLE = R.drawable.fab_background
 
         @ColorRes private val COLOR_COLLAPSED_BACKGROUND = R.color.speed_dial_overlay_collapse_default_color
         @ColorRes private val COLOR_EXPANDED_BACKGROUND = R.color.speed_dial_overlay_expand_default_color

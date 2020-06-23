@@ -1,4 +1,4 @@
-package com.multibutton.library
+package com.multibutton.library.speeddial
 
 import android.content.Context
 import android.util.AttributeSet
