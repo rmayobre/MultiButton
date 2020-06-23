@@ -3,4 +3,5 @@
     <item name="speed_dial_main_button" type="id" />
     <item name="fab_button" type="id" />
     <item name="fab_icon" type="id" />
+    <item name="fab_text" type="id"/>
 </resources>

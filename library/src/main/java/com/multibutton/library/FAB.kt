@@ -17,11 +17,11 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import kotlin.math.roundToInt
 
-class FAB : FrameLayout {
+open class FAB : FrameLayout {
 
-    private val button: Button
+    protected val button: Button
 
-    private val icon: ImageView
+    protected val icon: ImageView
 
     constructor(context: Context): this(context, null)
 

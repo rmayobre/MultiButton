@@ -4,6 +4,11 @@
         <attr name="elevation_height" format="dimension"/>
         <attr name="icon" format="reference"/>
     </declare-styleable>
+    <declare-styleable name="ExpandableFAB">
+        <attr name="text" format="string"/>
+        <attr name="textColor" format="color"/>
+        <attr name="fontSize" format="dimension"/>
+    </declare-styleable>
     <declare-styleable name="SpeedDial">
         <!-- Color Attributes -->
         <attr name="fabColor" format="color"/>
