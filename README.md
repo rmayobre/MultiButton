@@ -1,5 +1,7 @@
-# MultiButton
+# MultiButton - Archived (12/16/2021)
 An Android button library following [material design](https://material.io/design). *Wiki guide and instructions on how to use each button is in development.*
+
+**NOTE** - I archived this repo and moved it to the MIT license to remove any restrictions on usage. This project may be re-written in the future with Jetpack Compose.
 
 ![SpeedDial.gif](https://github.com/rmayobre/MultiButton/blob/develop/misc/examples.gif)
 
